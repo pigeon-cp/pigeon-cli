@@ -2,7 +2,10 @@
   "name": "pigeon-cli",
   "version": "0.1.0",
   "description": "A CLI Helper for pigeon project.",
-  "main": "index.js",
+  "main": "cli.js",
+  "bin": {
+    "pigeon-cli": "./cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,5 +17,8 @@
     "business"
   ],
   "author": "taccisum",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^9.0.0"
+  }
 }
