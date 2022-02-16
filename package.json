@@ -1,0 +1,18 @@
+{
+  "name": "pigeon-cli",
+  "version": "0.1.0",
+  "description": "A CLI Helper for pigeon project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pigeon",
+    "cli",
+    "center",
+    "message",
+    "business"
+  ],
+  "author": "taccisum",
+  "license": "MIT"
+}
