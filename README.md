@@ -12,7 +12,7 @@ if you have node.js installed upon you machine, you can install `pigeon-cli` via
 $ npm install -g pigeon-cli
 ```
 
-otherwise download the executable binary file from releases.
+otherwise download the executable binary file from [releases](https://github.com/pigeon-cp/pigeon-cli/releases).
 
 
 ## Getting Start
