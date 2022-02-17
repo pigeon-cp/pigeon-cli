@@ -16,7 +16,7 @@ program.version(pkg.version, '-v --version');
 program.description(pkg.description);
 program.usage('[command] [options]');
 
-program.action(port => {
+program.action(() => {
     let server = repl.start('> ')
 
     server.context.pigeon = {
@@ -42,7 +42,8 @@ program.command('debug')
         `-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${port}`,
         '-jar', `${opts.path || '/Users/liaojinfeng/Documents/workspace/tac/code/java/pegion/target'}/pigeon.jar`,
         '--spring.profiles.active=local',
-        '--spring.datasource.password=my-secret-ab'
+        '--spring.datasource.password=my-secret-ab',
+        '--spring.output.ansi.enabled=always'
     ]);
     result.on('close', function(code) {
         console.log('child process exited with code :' + code);
