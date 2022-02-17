@@ -1,8 +1,9 @@
 {
   "name": "pigeon-cli",
   "version": "0.1.0",
-  "description": "A CLI Helper for pigeon project.",
+  "description": "A CLI tool for project Pigeon.",
   "main": "cli.js",
+  "type": "module",
   "bin": {
     "pigeon-cli": "./cli.js"
   },
@@ -19,6 +20,7 @@
   "author": "taccisum",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^5.0.0",
     "commander": "^9.0.0"
   }
 }

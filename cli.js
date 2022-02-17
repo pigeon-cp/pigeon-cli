@@ -1,17 +1,22 @@
 #!/usr/local/bin/node
 
-const commander = require('commander');
-const repl = require('repl');
-const spawn = require('child_process').spawn
+import repl from 'repl';
+import { spawn } from 'child_process';
+import { Command, Argument }  from 'commander';
+import chalk from 'chalk';
+import fs from 'fs';
+import path from 'path'
+import { fileURLToPath } from 'url';
 
-let program = new commander.Command();
+let __dirname = path.dirname(fileURLToPath(import.meta.url));
+let program = new Command();
 
-program.version(require('./package.json').version)
+let pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json')));
+program.version(pkg.version, '-v --version');
+program.description(pkg.description);
+program.usage('[command] [options]');
 
-program.usage('[command] [options]')
-
-program.description('在交互模式下管理你的应用实例')
-.action((tmp, port) => {
+program.action(port => {
     let server = repl.start('> ')
 
     server.context.pigeon = {
@@ -20,18 +25,18 @@ program.description('在交互模式下管理你的应用实例')
                 console.log('template1, template2, template3')
             },
             add () {
-                console.log('新增模板成功')
+                console.log('success create template')
             }
         }
     }
 });
 
 program.command('debug')
-.addArgument(new commander.Argument('[port]', 'JDWP debug 连接端口').default('56789'))
-.option('-p --path <value>', 'Pigeon 可执行 jar 所在路径')
-.description('以 Debug 模式启动 Pigeon 应用实例')
+.addArgument(new Argument('[port]', 'Java jdwp connecting port.').default('56789'))
+.option('-p --path <value>', 'Pigeon application executable jars dir path.')
+.description('Start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
 .action((port, opts) => {
-    console.log(`Java Debugger 连接参数: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`)
+    console.log(`Java debugger connecting profile: ${chalk.blue.underline.bold(`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`)}`)
 
     var result = spawn('java', [
         `-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${port}`,
@@ -50,9 +55,4 @@ program.command('debug')
     });
 });
 
-
 program.parse();
-
-
-
-
