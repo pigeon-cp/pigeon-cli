@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^5.0.0",
-    "commander": "^9.0.0"
+    "commander": "^9.0.0",
+    "ora": "^6.0.1"
   }
 }
