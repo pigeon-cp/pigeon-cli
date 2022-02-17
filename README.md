@@ -2,7 +2,7 @@
 
 [Incubating]
 
-A CLI tools for project [Pigeon](https://github.com/pigeon-cp/pigeon).
+A CLI tool for project [Pigeon](https://github.com/pigeon-cp/pigeon).
 
 ## Download
 
