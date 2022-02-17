@@ -34,9 +34,10 @@ program.action(() => {
 });
 
 program.command('debug')
-.addArgument(new Argument('[port]', 'Java jdwp connecting port.').default('56789'))
+.addArgument(new Argument('[port]', 'java jdwp connecting port.').default('56789'))
 .option('-p --path <value>', 'Pigeon application executable jars dir path.')
 .option('-f --file <value>', 'Pigeon application executable jar file path.')
+.option('-t --properties <value>', 'Pigeon application additional runtime properties file path.', 'debug.properties')
 .description('Start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
 .action((port, opts) => {
     let jarFile
@@ -63,13 +64,28 @@ program.command('debug')
 
     console.log(`Java debugger connecting profile: ${chalk.blue.underline.bold(`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`)}`)
 
-    var result = spawn('java', [
+    let spawnOpts = [
         `-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${port}`,
         '-jar', jarFile,
-        '--spring.profiles.active=local',
-        '--spring.datasource.password=my-secret-ab',
-        '--spring.output.ansi.enabled=always'
-    ]);
+        '--spring.output.ansi.enabled=always',
+    ]
+
+    if(opts.properties) {
+        let propFilePath = path.isAbsolute(opts.properties) ? opts.properties: path.join(process.cwd(), opts.properties)
+        if (fs.existsSync(propFilePath)) {
+            // resolve .porperties and append to the end of command
+            let props = fs.readFileSync(propFilePath)
+            props = props.toString().split('\n')
+            .map(props => {
+                return `--${props}`
+            })
+            spawnOpts.push(...props)
+        } else {
+            log.warn(`properties ${propFilePath} not exists.`)
+        }
+    }
+
+    var result = spawn('java', spawnOpts);
     result.on('close', function(code) {
         console.log('child process exited with code :' + code);
     });
