@@ -47,7 +47,7 @@ program.command('debug')
             process.exit()
         }
     } else {
-        jarFile = `${opts.path || ''}/pigeon.jar`
+        jarFile = `${opts.path || '/usr/local/pigeon'}/pigeon.jar`
         if(!fs.existsSync(jarFile)) {
             console.log(chalk.yellow.bold(`Pigeon jar file: ${jarFile} not exists.`))
             console.log(chalk.blue.bold(`Try download automatically.`))
