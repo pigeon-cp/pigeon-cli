@@ -35,7 +35,7 @@ program.action(() => {
 
 program.command('debug')
 .addArgument(new Argument('[port]', 'java jdwp connecting port.').default('56789'))
-.option('-p --path <value>', 'Pigeon application executable jars dir path.')
+.option('-p --path <value>', 'Pigeon application executable jars dir path.', '/usr/local/pigeon')
 .option('-f --file <value>', 'Pigeon application executable jar file path.')
 .option('-t --properties <value>', 'Pigeon application additional runtime properties file path.', 'debug.properties')
 .description('Start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
@@ -48,7 +48,7 @@ program.command('debug')
             process.exit()
         }
     } else {
-        jarFile = `${opts.path || '/usr/local/pigeon'}/pigeon.jar`
+        jarFile = `${opts.path}/pigeon.jar`
         if(!fs.existsSync(jarFile)) {
             console.log(chalk.yellow.bold(`Pigeon jar file: ${jarFile} not exists.`))
             console.log(chalk.blue.bold(`Try download automatically.`))
