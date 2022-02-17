@@ -34,6 +34,8 @@ $ pigeon-cli
 
 ```bash
 $ pigeon-cli --help
+$ pigeon-cli [sub-command] --help
 ```
 
 run command above for more informations.
+
