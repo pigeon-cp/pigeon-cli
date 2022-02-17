@@ -43,7 +43,7 @@ program.command('debug')
     if(opts.file) {
         jarFile = opts.file
         if(!fs.existsSync(jarFile)) {
-            log.warn(`Specified jar file ${jarFile} not exists.`)
+            log.error(`Specified jar file ${jarFile} not exists.`)
             process.exit()
         }
     } else {

@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 export default {
-    warn() {
+    error() {
         return console.log(chalk.red.bold(arguments[0]))
     }
 } 
