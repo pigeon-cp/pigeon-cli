@@ -203,6 +203,7 @@ function gen(type, folder) {
             },
         ]).then(answers => {
             simple.generate(folder, {
+                'project_path': folder,
                 'pigeon_version': answers['pigeon_version'],
                 'plugin_id': answers['artifact_id'],
                 'group_id': answers['group_id'],
@@ -211,7 +212,7 @@ function gen(type, folder) {
                 'author': answers['author'],
                 'description': 'Pigeon plugin project.',
                 'base_path': path.join(...answers['group_id'].split('.')),
-                'base_package': answers['group_id'] 
+                'base_package': answers['group_id'] ,
             });
         })
     } else {

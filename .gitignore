@@ -9,4 +9,3 @@ logs/
 package-lock.json
 
 *.lcov
-debug.properties

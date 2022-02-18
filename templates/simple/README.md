@@ -6,7 +6,7 @@
 
 ```bash
 $ mvn compile               # provide necessary .class files
-$ vim debug.properties      # config 'pigeon.plugins.paths=/path/to/plugin' & other properties
+$ vim debug.properties      # config debug properties if nececssary
 $ pigeon-cli debug
 ```
 
