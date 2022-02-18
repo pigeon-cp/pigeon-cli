@@ -1,6 +1,6 @@
-import chalk from 'chalk';
+const chalk = require('chalk')
 
-export default {
+module.exports = {
     warn () {
         return console.log(chalk.yellow.bold(arguments[0]))
     },
