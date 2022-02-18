@@ -80,11 +80,11 @@ program.command('debug')
             console.log(chalk.blue.bold(`Try download automatically.`))
             // const spinner = ora(chalk.blue.bold('Downloading...')).start();
             // TODO:: do download
-            spinner.color = 'green'
-            spinner.stopAndPersist({
-                symbol: '🎉',
-                text: chalk.green.bold('Downloaded.')
-            })
+            // spinner.color = 'green'
+            // spinner.stopAndPersist({
+            //     symbol: '🎉',
+            //     text: chalk.green.bold('Downloaded.')
+            // })
         }
     }
 
