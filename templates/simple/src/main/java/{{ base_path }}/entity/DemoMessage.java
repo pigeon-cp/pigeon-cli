@@ -1,7 +1,8 @@
-package {{ base_package }}.entity.core.message;
+package {{ base_package }}.entity;
 
 import pigeon.core.data.MessageDO;
 import pigeon.core.entity.core.Message;
+import pigeon.core.entity.core.sp.MessageServiceProvider;
 
 /**
  * Demo Message
@@ -28,5 +29,10 @@ public class DemoMessage extends Message {
                 data.getContent(),
                 data.getSender()
         );
+    }
+
+    @Override
+    public MessageServiceProvider getServiceProvider() {
+        return null;
     }
 }
