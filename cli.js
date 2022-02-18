@@ -176,26 +176,42 @@ program.command('plugin')
 })
 
 function gen(type, folder) {
-    console.log(folder)
     if(type === 'simple') {
         inquirer.prompt([
             {
                 type: 'input',
                 name: 'pigeon_version',
-                message: 'Specify Pigeon version',
+                message: 'specify dependent Pigeon version',
                 default: '0.2',
+            },
+            {
+                type: 'input',
+                name: 'artifact_id',
+                message: 'provide artifact id(is also plugin id) for you plugin project:',
+                default: path.basename(folder)
+            },
+            {
+                type: 'input',
+                name: 'group_id',
+                message: 'provide group id for you plugin project:',
+                default: 'pigeon.plugin'
+            },
+            {
+                type: 'input',
+                name: 'author',
+                message: 'your name is:',
             },
         ]).then(answers => {
             simple.generate(folder, {
                 'pigeon_version': answers['pigeon_version'],
-                'plugin_id': 'pigeon-demo',
-                'group_id': 'pigeon.plugin.demo',
-                'artifact_id': 'pigeon-demo',
-                'version': '0.1-SNAPSHOT',
-                'author': 'taccisum',
-                'description': 'Pigeon plugin demo project.',
-                'base_path': 'pigeon/plugin/demo',
-                'base_package': 'pigeon.plugin.demo'
+                'plugin_id': answers['artifact_id'],
+                'group_id': answers['group_id'],
+                'artifact_id': answers['artifact_id'],
+                'version': '0.1',
+                'author': answers['author'],
+                'description': 'Pigeon plugin project.',
+                'base_path': path.join(...answers['group_id'].split('.')),
+                'base_package': answers['group_id'] 
             });
         })
     } else {
