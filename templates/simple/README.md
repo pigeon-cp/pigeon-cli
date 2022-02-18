@@ -10,4 +10,14 @@ $ vim debug.properties      # config debug properties if nececssary
 $ pigeon-cli debug
 ```
 
-and then run your debugger to connecting jwdp port(default: 56789).
+then run your debugger to connecting jwdp port(default: 56789).
+
+```bash
+$ curl -s http://localhost:18080/actuator/pigeon/info
+```
+
+then run command above to get plugin info loaded by Pigeon application. and you will see json result like the sample below
+
+```json
+{"plugins":{"pigeon-sample":{"extensions":[...],"state":"STARTED","version":"0.1"}}}
+```
