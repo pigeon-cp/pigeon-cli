@@ -4,7 +4,9 @@
 
 A CLI tool for project [Pigeon](https://github.com/pigeon-cp/pigeon).
 
-## Download
+## Getting Start
+
+### Download
 
 if you have node.js installed upon you machine, you can install `pigeon-cli` via npm by use the command below
 
@@ -14,13 +16,18 @@ $ npm install -g pigeon-cli
 
 otherwise download the executable binary file from [releases](https://github.com/pigeon-cp/pigeon-cli/releases).
 
-
-## Getting Start
-
-### Plugin Debug
+### Create Plugin
 
 ```bash
-$ pigeon-cli debug
+$ pigeon-cli plugin [type]      # create new empty plugin project
+```
+
+#### Plugin Debug
+
+```bash
+$ cd /path/to/plugin        # cd plugin project dir
+$ vim debug.properties      # config Pigeon application
+$ pigeon-cli debug          # start Pigeon application on debug mode
 ```
 
 ### Manage Pigeon Instance
