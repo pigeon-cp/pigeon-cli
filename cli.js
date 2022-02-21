@@ -43,29 +43,27 @@ program.version(pkg.version, '-v --version');
 program.description(pkg.description);
 program.usage('[command] [options]');
 
-program.action(() => {
+program
+.option('-h --host <host>', 'target Pigeon instance host.', '127.0.0.1')
+.option('-p --port <port>', 'target Pigeon instance port.', '8081')
+.option('-s --ssl', 'use ssl for comminucation.')
+.action((opts) => {
     let server = repl.start('> ')
-
-    server.context.pigeon = {
-        template: {
-            list() {
-                console.log('template1, template2, template3')
-            },
-            add () {
-                console.log('success create template')
-            }
-        }
-    }
+    const Pigeon = require('./src/apis/pigeon')
+    const Apis = require('./src/apis/all')
+    server.context.pigeon = new Pigeon(opts.host, opts.port, opts.ssl)
+    server.context.apis = new Apis(server.context.pigeon)
 });
 
 program.command('debug')
 .addArgument(new Argument('[port]', 'java jdwp connecting port.').default('56789'))
-.option('-p --path <value>', 'Pigeon application executable jars dir path.', '/usr/local/pigeon')
+.option('-d --path <value>', 'Pigeon application executable jars dir path.', '/usr/local/pigeon')
 .option('-f --file <value>', 'Pigeon application executable jar file path.')
 .option('-t --properties <value>', 'Pigeon application additional runtime properties file path.', 'debug.properties')
 // .option('-x --plugins <value>', 'Pigeon application plugins path.')
 .description('start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
 .action((port, opts) => {
+    console.log(opts)
     let jarFile
     if(opts.file) {
         jarFile = opts.file
@@ -117,7 +115,6 @@ program.command('debug')
         }
     }
 
-    console.log(spawnOpts)
     var result = spawn('java', spawnOpts);
     result.on('close', function(code) {
         console.log('child process exited with code :' + code);

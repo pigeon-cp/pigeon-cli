@@ -21,3 +21,10 @@ then run command above to get plugin info loaded by Pigeon application. and you 
 ```json
 {"plugins":{"pigeon-sample":{"extensions":[...],"state":"STARTED","version":"0.1"}}}
 ```
+
+### Send demo message
+
+```bash
+$ pigeon-cli
+> apis.messages.send('DEMO', {target: "taccisum", title: "demo", content: "hello pigeon", channel: "DEMO"})
+```

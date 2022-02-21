@@ -39,6 +39,7 @@ function gen(folder, ctx) {
     }
   })
   console.log(chalk.green.bold('🎉 finished.'))
+  console.log(`now you get further guides by reading ${chalk.blue.bold('README.md')} of this plugin project.`)
 }
 
 // export default 
