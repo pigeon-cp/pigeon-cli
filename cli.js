@@ -50,6 +50,7 @@ program
 .action((opts) => {
     let server = repl.start({
         prompt: '> ',
+        ignoreUndefined: true
     })
     server.prependListener('close', () => {
         console.log(`👋 ${chalk.bold('byebye.')}`)
