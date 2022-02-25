@@ -48,7 +48,12 @@ program
 .option('-p --port <port>', 'target Pigeon instance port.', '8081')
 .option('-s --ssl', 'use ssl for comminucation.')
 .action((opts) => {
-    let server = repl.start('> ')
+    let server = repl.start({
+        prompt: '> ',
+    })
+    server.prependListener('close', () => {
+        console.log(`👋 ${chalk.bold('byebye.')}`)
+    })
     const Pigeon = require('./src/apis/pigeon')
     const Apis = require('./src/apis/all')
     server.context.pigeon = new Pigeon(opts.host, opts.port, opts.ssl)
@@ -89,7 +94,7 @@ program.command('debug')
     console.log(`Java debugger connecting profile: ${chalk.blue.underline.bold(`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${port}`)}`)
 
     let spawnOpts = [
-        '-Dpf4j.mode=dev',
+        // '-Dpf4j.mode=dev',
         `-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${port}`,
         '-jar', jarFile,
         '--spring.output.ansi.enabled=always',
