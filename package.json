@@ -16,6 +16,9 @@
     "message",
     "business"
   ],
+  "pkg": {
+    "outputPath": "bin"
+  },
   "author": "taccisum",
   "license": "MIT",
   "dependencies": {
