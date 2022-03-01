@@ -34,8 +34,18 @@ $ pigeon-cli debug          # start Pigeon application on debug mode
 
 ```bash
 $ pigeon-cli
-> pigeon.template.list()
+> pigeon.messages.send()
 ```
+
+### Migrate DB
+
+run
+
+```bash
+$ pigeon-cli migrate [type]     # type: mysql or sqlite
+```
+
+and then select db version you want to migrate to.
 
 ## References
 
