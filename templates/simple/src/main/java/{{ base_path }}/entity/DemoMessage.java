@@ -21,7 +21,7 @@ public class DemoMessage extends Message {
     }
 
     @Override
-    protected void doDelivery() throws Exception {
+    protected void doDelivery() {
         MessageDO data = this.data();
         System.out.printf("To %s.\n%s\n%s\n  - by %s",
                 data.getTarget(),
