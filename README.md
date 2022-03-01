@@ -39,8 +39,6 @@ $ pigeon-cli
 
 ### Migrate DB
 
-run
-
 ```bash
 $ pigeon-cli migrate [type]     # type: mysql or sqlite
 ```
