@@ -21,6 +21,7 @@ const path = require('path')
 const log = require('./log.js')
 const simple = require('./src/scaffold/simple.js');
 const inquirer = require('inquirer');
+const migrate = require('db-migrate');
 
 let program = new Command();
 
@@ -175,6 +176,81 @@ program.command('plugin')
         })
     } else {
         gen(type, folder)
+    }
+})
+
+program.command('migrate')
+.description('help you to migrate db.')
+.addArgument(new Argument('[type]', 'db type.').choices(['sqlite', 'mysql']).default('mysql'))
+.option('-h --host <host>', '[mysql] target db host.', 'localhost')
+.option('-p --port <port>', '[mysql] target db port.', '3306')
+.option('-u --user <username>', '[mysql] provide username for target db.', 'root')
+.option('-a --pass <password>', '[mysql] provide password for target db or input later on interactive mode(recommanded).')
+.option('--db <database>', 'target database name.', 'pigeon_mig_demo')
+.action((type, opts) => {
+    console.log(`type: ${type}`)
+    console.log(`db-migrate version: ${migrate.version}`)
+
+    function mig(_type, _opts) {
+        let ins = migrate.getInstance(true, {
+            env: _type,
+            config: {
+                "mysql": {
+                    "driver": "mysql",
+                    "host": _opts.host,
+                    "port": _opts.port,
+                    "database": _opts.db,
+                    "user": _opts.user,
+                    "password": _opts.pass,
+                    "multipleStatements": true
+                }
+            }
+        });
+
+        // clear argv manually
+        ins.internals.argv._ = []
+
+        // ins.config['sql-file'] = true
+        // ins.create('0.2', 'mysql')
+
+        let vmap = {
+            'latest': 2,
+            '0.2': 2,
+            '0.1': 1,
+        }
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'version',
+                message: 'select target db version of pigeon you want to upgrade to',
+                choices: Object.keys(vmap),
+                default: 'latest'
+            }
+        ]).then(answers => {
+            ins.up(vmap[answers.version], 'mysql')
+        })
+    }
+    
+    if(type === 'mysql') {
+        console.log(`database: ${opts.host}:${opts.port}/${opts.db}`)
+        if(!opts.pass) {
+            inquirer.prompt([
+                {
+                    type: 'password',
+                    name: 'pass',
+                    message: '🔑 enter you db password',
+                }
+            ]).then(answers => {
+                opts.pass = answers.pass
+                mig(type, opts)
+            })
+        } else {
+            mig(type, opts)
+        }
+    } else {
+        // sqlite
+        mig(type, opts)
     }
 })
 

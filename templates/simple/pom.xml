@@ -21,6 +21,7 @@
             <groupId>com.github.taccisum</groupId>
             <artifactId>pigeon-core</artifactId>
             <!-- provided by Pigeon app -->
+            <version>{{ pigeon_version }}</version>
             <scope>provided</scope>
         </dependency>
 
