@@ -11,7 +11,7 @@ A CLI tool for project [Pigeon](https://github.com/pigeon-cp/pigeon).
 if you have node.js installed upon you machine, you can install `pigeon-cli` via npm by use the command below
 
 ```bash
-$ npm install -g pigeon-cli
+$ npm install -g @pigeon-cp/pigeon-cli
 ```
 
 otherwise download the executable binary file from [releases](https://github.com/pigeon-cp/pigeon-cli/releases).
