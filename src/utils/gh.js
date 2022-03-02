@@ -37,7 +37,12 @@ module.exports = {
     async jar_download_url(tag) {
         let releases = await this.releases()
         return releases.filter(r => {
+            // find release by tag
             return r['tag_name'] === tag
-        })[0]['assets'][0]['browser_download_url']
+        })[0]['assets']
+        .filter(asset => {
+            // find jar asset item by name
+            return asset.name === 'pigeon.tar.gz'
+        })[0]['browser_download_url']
     }
 }
