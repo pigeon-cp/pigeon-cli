@@ -123,7 +123,6 @@ program.command('debug')
                 exit(1)
             }
 
-            
             let answers = await inquirer.prompt([
                 {
                     type: 'list',
@@ -135,7 +134,15 @@ program.command('debug')
 
             let tmp_dir = fs.mkdtempSync(path.join(os.tmpdir(), 'com.github.pigeon.'))
             try {
-                let exit_val = await spawn_async(path.join(__dirname, 'script/download.sh'), [await gh.jar_download_url('v' + answers.ver), tmp_dir, abs_path])
+                // script 'download.sh' can not be found by spawn if pack as binary file by pkg.js
+                let script_str = fs.readFileSync(path.join(__dirname, 'script/download.sh')) + ''
+                let args = ['-c', script_str]
+                args.push('')   // pass empty str as $0(-c args start with $0 instead $1)
+                args.push(await gh.jar_download_url('v' + answers.ver))
+                args.push(tmp_dir)
+                args.push(abs_path)
+                let exit_val = await spawn_async('/bin/bash', args)
+                // let exit_val = await spawn_async(path.join(__dirname, 'script/download.sh'), [await gh.jar_download_url('v' + answers.ver), tmp_dir, abs_path])
                 if (exit_val != 0) {
                     console.log(chalk.red.bold('download failed.'))
                     exit(exit_val)

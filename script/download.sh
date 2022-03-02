@@ -18,4 +18,4 @@ echo ''
 echo 'uncompress package...'
 tar -xvf pigeon.tar.gz
 
-mv pigeon.jar $3
+mv pigeon.jar $dir
