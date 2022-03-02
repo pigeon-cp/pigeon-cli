@@ -29,6 +29,9 @@ jobs:
         with:
           node-version: '>=14.16.0'
 
+      - name: Install pkg.js
+        run: npm install -g pkg
+
       - name: Build Binary Files
         run: pkg .
 
