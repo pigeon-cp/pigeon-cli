@@ -1,5 +1,5 @@
 {
-  "name": "@taccisum/pigeon-cli",
+  "name": "@pigeon-cp/pigeon-cli",
   "version": "0.1.0",
   "description": "A CLI tool for project Pigeon.",
   "main": "cli.js",
