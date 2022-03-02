@@ -1,0 +1,79 @@
+# 说明：仅在监测到 'v*' 开头的 tags 推送时触发
+
+name: CD Workflow
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish-npm-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3.0.0
+        with:
+          node-version: '>=14.16.0'
+          cache: npm
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_PUB_TK}}
+
+  publish-gh-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v3.0.0
+        with:
+          node-version: '>=14.16.0'
+          cache: npm
+
+      - name: Build Binary Files
+        run: pkg .
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Pigeon CLI ${{ github.ref }} Release
+          body_path: "./RELEASE.md"
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux Binary
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/pigeon-cli-linux
+          asset_name: pigeon-cli-linux
+          asset_content_type: application/octet-stream
+
+      - name: Upload MacOS Binary
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/pigeon-cli-macos
+          asset_name: pigeon-cli-macos
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows Binary
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/pigeon-cli-win.exe
+          asset_name: pigeon-cli-win.exe
+          asset_content_type: application/octet-stream
