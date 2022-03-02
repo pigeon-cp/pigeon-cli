@@ -24,8 +24,10 @@ const inquirer = require('inquirer');
 const migrate = require('db-migrate');
 const { exit } = require('process');
 const os = require('os');
+const gh = require('./src/utils/gh');
 
 let program = new Command();
+
 
 function spawn_async(cmd, args) {
     return new Promise((resolve, reject) => {
@@ -121,18 +123,19 @@ program.command('debug')
                 exit(1)
             }
 
+            
             let answers = await inquirer.prompt([
                 {
                     type: 'list',
                     name: 'ver',
-                    choices: ['0.2'],
+                    choices: (await gh.tags()).map(tag => tag.replace(/^v/, '')),
                     message: 'select version of Pigeon'
                 }
             ])
 
             let tmp_dir = fs.mkdtempSync(path.join(os.tmpdir(), 'com.github.pigeon.'))
             try {
-                let exit_val = await spawn_async(path.join(__dirname, 'script/download.sh'), [answers.ver, tmp_dir, abs_path])
+                let exit_val = await spawn_async(path.join(__dirname, 'script/download.sh'), [await gh.jar_download_url('v' + answers.ver), tmp_dir, abs_path])
                 if (exit_val != 0) {
                     console.log(chalk.red.bold('download failed.'))
                     exit(exit_val)
