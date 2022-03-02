@@ -22,8 +22,33 @@ const log = require('./log.js')
 const simple = require('./src/scaffold/simple.js');
 const inquirer = require('inquirer');
 const migrate = require('db-migrate');
+const { exit } = require('process');
+const os = require('os');
 
 let program = new Command();
+
+function spawn_async(cmd, args) {
+    return new Promise((resolve, reject) => {
+        // child process
+        let cp
+        try {
+            cp = spawn(cmd, args)
+        } catch(err) {
+            reject(err)
+        }
+
+        cp.stdin.pipe(process.stdin)
+        cp.stdout.pipe(process.stdout)
+        cp.stderr.pipe(process.stderr)
+
+        cp.on('error', err => {
+            reject(err)
+        })
+        cp.on('exit', exit_val => {
+            resolve(exit_val)
+        })
+    })
+}
 
 function show_help(sub_command) {
     let opts = ['--help']
@@ -69,8 +94,7 @@ program.command('debug')
 .option('-t --properties <value>', 'Pigeon application additional runtime properties file path.', 'debug.properties')
 // .option('-x --plugins <value>', 'Pigeon application plugins path.')
 .description('start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
-.action((port, opts) => {
-    console.log(opts)
+.action(async (port, opts) => {
     let jarFile
     if(opts.file) {
         jarFile = opts.file
@@ -79,17 +103,48 @@ program.command('debug')
             process.exit()
         }
     } else {
-        jarFile = `${path.isAbsolute(opts.path) ? opts.path : path.join(process.cwd(), opts.path)}/pigeon.jar`
+        let abs_path = path.isAbsolute(opts.path) ? opts.path : path.join(process.cwd(), opts.path)
+        jarFile = `${abs_path}/pigeon.jar`
         if(!fs.existsSync(jarFile)) {
             console.log(chalk.yellow.bold(`Pigeon jar file: ${jarFile} not exists.`))
-            console.log(chalk.blue.bold(`Try download automatically.`))
-            // const spinner = ora(chalk.blue.bold('Downloading...')).start();
-            // TODO:: do download
-            // spinner.color = 'green'
-            // spinner.stopAndPersist({
-            //     symbol: '🎉',
-            //     text: chalk.green.bold('Downloaded.')
-            // })
+            console.log(chalk.white.bold(`try download automatically.`))
+
+            if(fs.existsSync(abs_path)) {
+                try {
+                    fs.accessSync(abs_path, fs.constants.W_OK)
+                } catch (err) {
+                    console.warn(`no permission to access '${abs_path}'. try sudo mode agian.`)
+                    exit(1)
+                }
+            } else {
+                console.log(chalk.red.bold(`folder '${abs_path}' does not exists.`))
+                exit(1)
+            }
+
+            let answers = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'ver',
+                    choices: ['0.2'],
+                    message: 'select version of Pigeon'
+                }
+            ])
+
+            let tmp_dir = fs.mkdtempSync(path.join(os.tmpdir(), 'com.github.pigeon.'))
+            try {
+                let exit_val = await spawn_async(path.join(__dirname, 'script/download.sh'), [answers.ver, tmp_dir, abs_path])
+                if (exit_val != 0) {
+                    console.log(chalk.red.bold('download failed.'))
+                    exit(exit_val)
+                } else {
+                    console.log(chalk.green.bold('🎉 download finished.'))
+                }
+            } catch(err) {
+                console.error(err)
+                exit()
+            } finally {
+                fs.rmSync(tmp_dir, {recursive: true})
+            }
         }
     }
 
@@ -214,9 +269,7 @@ program.command('migrate')
         // ins.create('0.2', 'mysql')
 
         let vmap = {
-            'latest': 2,
             '0.2': 2,
-            '0.1': 1,
         }
 
         inquirer.prompt([
@@ -225,7 +278,7 @@ program.command('migrate')
                 name: 'version',
                 message: 'select target db version of pigeon you want to upgrade to',
                 choices: Object.keys(vmap),
-                default: 'latest'
+                default: '0.2'
             }
         ]).then(answers => {
             ins.up(vmap[answers.version], 'mysql')
