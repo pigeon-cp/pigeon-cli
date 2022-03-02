@@ -12,7 +12,7 @@ fi
 
 cd $tmp_dir
 echo 'start download...'
-wget $url -O pigeon.tar.gz -q --show-progress
+wget $url -O pigeon.tar.gz -q --show-progress --progress=bar:force
 
 echo ''
 echo 'uncompress package...'
