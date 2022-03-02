@@ -18,7 +18,7 @@ jobs:
           cache: npm
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_PUB_TK}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUB_TK }}
 
   publish-gh-release:
     runs-on: ubuntu-latest
@@ -46,7 +46,6 @@ jobs:
           prerelease: false
 
       - name: Upload Linux Binary
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +56,6 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload MacOS Binary
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,7 +66,6 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: Upload Windows Binary
-        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
