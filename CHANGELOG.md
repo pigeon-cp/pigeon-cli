@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/pigeon-cp/pigeon-cli/compare/v0.1.0...v0.1.1) (2022-03-03)
+
+
+### Bug Fixes
+
+* **scaffold:** supplement requires for plugin.properties and replace magic ver list choices ([9cf6a65](https://github.com/pigeon-cp/pigeon-cli/commit/9cf6a65a62cc26b18f7944392b16545ad757d27a))
+
 ### 0.1.0 (2022-03-02)
 
 
