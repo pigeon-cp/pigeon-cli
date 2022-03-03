@@ -269,7 +269,8 @@ program.command('migrate')
                     "password": _opts.pass,
                     "multipleStatements": true
                 }
-            }
+            },
+            cwd: __dirname
         });
 
         // clear argv manually
