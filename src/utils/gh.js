@@ -7,10 +7,17 @@ const request = require('request')
 let releases_cache
 
 module.exports = {
-    async tags() {
+    async tags(opt) {
         let ls = (await this.releases())
+        console.log(`tags: ${ls}`)
         return ls.map(r => {
-            return r['tag_name']
+            let name = r['tag_name']
+            if (opt) {
+                if(!opt.prefix) {
+                    name = name.replace(/^v/, '')
+                }
+            }
+            return name
         })
     },
     releases() {

@@ -25,6 +25,7 @@ const migrate = require('db-migrate');
 const { exit } = require('process');
 const os = require('os');
 const gh = require('./src/utils/gh');
+const semver = require('semver')
 
 let program = new Command();
 
@@ -203,7 +204,7 @@ program.command('plugin')
 .description('create a new plugin project.')
 .addArgument(new Argument('[type]', 'plugin type.').default('simple'))
 .option('-f --folder <folder>', 'specify folder that save new project.')
-.action((type, opts) => {
+.action(async (type, opts) => {
     let folder = process.cwd()
     if(opts.folder) {
         folder = opts.folder
@@ -211,37 +212,35 @@ program.command('plugin')
 
     let existFiles = fs.readdirSync(folder)
     if(existFiles.length > 0) {
-        inquirer.prompt([
+        let answers = await inquirer.prompt([
             {
                 type: 'list',
                 name: 'ok',
                 message: `folder ${folder} is not empty. clear now?`,
                 choices: [ 'No', 'Yes' ]
             }
-        ]).then(answers => {
-            if(answers.ok === 'Yes') {
-                existFiles.forEach(name => {
-                    let file = path.join(folder, name)
-                    console.log(`${chalk.red.bold('-')} ${file}`)
-                    if(fs.statSync(file).isDirectory()) {
-                        fs.rmdirSync(file, {
-                        recursive: true,
-                        force: true
-                        })
-                    } else {
-                        fs.unlinkSync(file)
-                    }
-                })
-            } else {
-                console.log(chalk.red.bold('🤧 stop create simple plugin.'))
-                process.exit()
-            }
-        }).then(() => {
-            gen(type, folder)
-        })
-    } else {
-        gen(type, folder)
+        ]);
+
+        if(answers.ok === 'Yes') {
+            existFiles.forEach(name => {
+                let file = path.join(folder, name)
+                console.log(`${chalk.red.bold('-')} ${file}`)
+                if(fs.statSync(file).isDirectory()) {
+                    fs.rmdirSync(file, {
+                    recursive: true,
+                    force: true
+                    })
+                } else {
+                    fs.unlinkSync(file)
+                }
+            })
+        } else {
+            console.log(chalk.red.bold('🤧 stop create simple plugin.'))
+            process.exit()
+        }
     }
+
+    await gen(type, folder)
 })
 
 program.command('migrate')
@@ -317,14 +316,14 @@ program.command('migrate')
     }
 })
 
-function gen(type, folder) {
+async function gen(type, folder) {
     if(type === 'simple') {
         inquirer.prompt([
             {
-                type: 'input',
+                type: 'list',
+                choices: await gh.tags({prefix: false}),
                 name: 'pigeon_version',
                 message: 'specify dependent Pigeon version',
-                default: '0.2',
             },
             {
                 type: 'input',
@@ -344,9 +343,19 @@ function gen(type, folder) {
                 message: 'your name is:',
             },
         ]).then(answers => {
+            let pigeon_version = answers['pigeon_version']
+            let requires 
+            if(semver.major(semver.coerce(pigeon_version)) === 0
+             && semver.minor(semver.coerce(pigeon_version)) === 1) {
+                // >=0.2 is not compatible with 0.1.x
+                requires = `>=${pigeon_version} & <0.2`
+            } else {
+                requires = `>=${pigeon_version} `
+            }
             simple.generate(folder, {
                 'project_path': folder,
-                'pigeon_version': answers['pigeon_version'],
+                'pigeon_version': pigeon_version,
+                'requires': requires,
                 'plugin_id': answers['artifact_id'],
                 'group_id': answers['group_id'],
                 'artifact_id': answers['artifact_id'],
@@ -354,7 +363,7 @@ function gen(type, folder) {
                 'author': answers['author'],
                 'description': 'Pigeon plugin project.',
                 'base_path': path.join(...answers['group_id'].split('.')),
-                'base_package': answers['group_id'] ,
+                'base_package': answers['group_id'],
             });
         })
     } else {

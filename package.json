@@ -28,6 +28,7 @@
     "db-migrate-mysql": "^2.2.0",
     "inquirer": "^8.2.0",
     "request": "^2.88.2",
+    "semver": "^7.3.5",
     "underscore": "^1.13.2"
   }
 }
