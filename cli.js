@@ -72,7 +72,8 @@ program.version(pkg.version, '-v --version');
 program.description(pkg.description);
 program.usage('[command] [options]');
 
-program
+program.command('admin', { isDefault: true })
+.description('[default] administrate your Pigeon instance in REPL mode.')
 .option('-h --host <host>', 'target Pigeon instance host.', '127.0.0.1')
 .option('-p --port <port>', 'target Pigeon instance port.', '8081')
 .option('-s --ssl', 'use ssl for comminucation.')
@@ -96,7 +97,7 @@ program.command('debug')
 .option('-f --file <value>', 'Pigeon application executable jar file path.')
 .option('-t --properties <value>', 'Pigeon application additional runtime properties file path.', 'debug.properties')
 // .option('-x --plugins <value>', 'Pigeon application plugins path.')
-.description('start Pigeon application as debug mode. Use --help to see this sub-command\'s help.')
+.description('start Pigeon application on debug mode.')
 .action(async (port, opts) => {
     let jarFile
     if(opts.file) {
@@ -251,7 +252,7 @@ program.command('migrate')
 .option('-u --user <username>', '[mysql] provide username for target db.', 'root')
 .option('-a --pass <password>', '[mysql] provide password for target db or input later on interactive mode(recommanded).')
 .option('--db <database>', 'target database name.', 'pigeon_mig_demo')
-.action((type, opts) => {
+.action((type, opts, cmd) => {
     console.log(`type: ${type}`)
     console.log(`db-migrate version: ${migrate.version}`)
 
