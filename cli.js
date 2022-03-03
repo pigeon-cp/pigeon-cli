@@ -251,8 +251,8 @@ program.command('migrate')
 .option('-p --port <port>', '[mysql] target db port.', '3306')
 .option('-u --user <username>', '[mysql] provide username for target db.', 'root')
 .option('-a --pass <password>', '[mysql] provide password for target db or input later on interactive mode(recommanded).')
-.option('--db <database>', 'target database name.', 'pigeon_mig_demo')
-.action((type, opts, cmd) => {
+.option('--db <database>', 'target database name.', 'pigeon')
+.action((type, opts) => {
     console.log(`type: ${type}`)
     console.log(`db-migrate version: ${migrate.version}`)
 
